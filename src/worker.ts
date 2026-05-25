@@ -1,9 +1,12 @@
-import { run_lexor } from '@superanova/lexor_wasm';
+import init, { run_lexor } from '@superanova/lexor_wasm';
+const wasmReady = init();
 
 self.onmessage = async (e: MessageEvent) => {
   const { code, id, inputs = [] } = e.data;
   
   try {
+    await wasmReady;
+
     // Note: Web Workers do not have access to window.prompt()
     // If the Lexor script requires input (via SCAN) and the inputs array is empty,
     // the WASM module's built-in prompt fallback might throw an error here.
