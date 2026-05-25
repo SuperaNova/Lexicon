@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lexor-bg: #1e1e2e;
+  --color-lexor-panel: #2a2a3e;
+  --color-lexor-accent: #a6e3a1;
+  --color-lexor-text: #cdd6f4;
+  --color-lexor-border: #45475a;
+  --color-lexor-error: #f38ba8;
+  --color-lexor-editor: #181825;
+}
+
+body {
+  background-color: var(--color-lexor-bg);
+  color: var(--color-lexor-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
