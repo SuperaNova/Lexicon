@@ -1,4 +1,4 @@
-import { Component, For } from 'solid-js';
+import { For, type Component } from 'solid-js';
 
 interface ConsolePaneProps {
   logs: { type: 'success' | 'error' | 'info'; text: string }[];

@@ -1,33 +1,26 @@
-// Lexor WASM Worker
-// This isolates the systems-level compute from the UI thread per Playbook 2.
-
-// TODO: When the @superanova/lexor_wasm package is published to npm, 
-// uncomment the import and use it in the executeCode function.
-// import * as lexor from '@superanova/lexor_wasm';
+import { run_lexor } from '@superanova/lexor_wasm';
 
 self.onmessage = async (e: MessageEvent) => {
-  const { code, id } = e.data;
+  const { code, id, inputs = [] } = e.data;
   
   try {
-    // Simulated compile/execute delay to mimic WASM boundary crossing
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // Note: Web Workers do not have access to window.prompt()
+    // If the Lexor script requires input (via SCAN) and the inputs array is empty,
+    // the WASM module's built-in prompt fallback might throw an error here.
+    // For a fully robust IDE, we will eventually need to feed inputs from the UI.
     
-    // MOCK EXECUTION:
-    // Once lexor_wasm is ready, replace this mock logic with:
-    // const output = lexor.run(code);
-    let output = "";
-    if (code.trim() === "") {
-      output = "";
-    } else if (code.includes("print")) {
-      output = "Lexor Output: Hello World!";
-    } else if (code.includes("error")) {
-      throw new Error("Syntax error on line 1");
-    } else {
-      output = "Lexor parsed successfully. (Mock Output)";
-    }
+    const result = run_lexor(code, inputs);
 
-    self.postMessage({ id, type: 'success', output });
+    if (result.error) {
+      // It threw a Lexor-level error (Syntax, Semantic, Runtime)
+      self.postMessage({ id, type: 'error', error: result.error });
+    } else {
+      // Execution successful
+      self.postMessage({ id, type: 'success', output: result.output });
+    }
   } catch (err: any) {
-    self.postMessage({ id, type: 'error', error: err.message || "Unknown error" });
+    // This catches JS-level errors (like window.prompt crashing in a worker)
+    self.postMessage({ id, type: 'error', error: err.message || "A fatal JS execution error occurred" });
   }
 };
+

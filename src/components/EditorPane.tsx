@@ -1,6 +1,7 @@
 import { onCleanup, onMount } from 'solid-js';
 import { EditorState } from '@codemirror/state';
-import { EditorView, basicSetup } from '@codemirror/view';
+import { EditorView } from '@codemirror/view';
+import { basicSetup } from 'codemirror';
 
 interface EditorPaneProps {
   initialCode?: string;

@@ -5,7 +5,7 @@ import { ConsolePane } from './components/ConsolePane';
 type Log = { type: 'success' | 'error' | 'info'; text: string };
 
 function App() {
-  const [code, setCode] = createSignal('print("Hello Lexor!");\n');
+  const [code, setCode] = createSignal('SCRIPT AREA\nSTART SCRIPT\nPRINT: "Hello Lexor Web!"\nEND SCRIPT\n');
   const [logs, setLogs] = createSignal<Log[]>([{ type: 'info', text: 'Lexor IDE Ready.' }]);
   const [isExecuting, setIsExecuting] = createSignal(false);
   
@@ -63,77 +63,28 @@ function App() {
         >
           {isExecuting() ? 'Running...' : 'Run Code'}
         </button>
-      <div class="ticks"></div>
+      </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg class="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img class="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://solidjs.com/" target="_blank">
-                <img class="button-icon" src={solidLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {/* Main Layout - Split Pane */}
+      <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Editor Area */}
+        <div class="flex-1 lg:w-2/3 h-1/2 lg:h-full">
+          <EditorPane 
+            initialCode={code()} 
+            onCodeChange={setCode} 
+          />
         </div>
-        <div id="social">
-          <svg class="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg class="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div class="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Console Area */}
+        <div class="h-1/2 lg:h-full lg:w-1/3 min-w-[300px]">
+          <ConsolePane 
+            logs={logs()} 
+            onClear={clearLogs} 
+          />
+        </div>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
